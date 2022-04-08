@@ -1,0 +1,2 @@
+This project is meant to read flat files into an appropriate data set in R. The focus is to do a cleanup of the data as best as possible. A tidy data set has been created and summarized.
+It really is not meant to be too complicated.
