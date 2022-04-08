@@ -3,7 +3,8 @@
 # 
 # gc()
 # #READING DATA INTO R
-# ##Activities
+# 
+# ##Activity Labels
 # ###Test Data
 # y_test_dir <- "./data/smartphone_data_set/test/y_test.txt"
 # y_test <- read.table(y_test_dir, header = FALSE) %>%
@@ -16,17 +17,17 @@
 #       unlist(recursive = TRUE, use.names = FALSE)
 # 
 # 
-# ##Measured Data
+# ##Numerical Data
 # ###Test Data
 # X_test_dir <- "./data/smartphone_data_set/test/X_test.txt"
-# X_test <- read.table(X_test_dir, header = FALSE)
+# X_test <- read.table(X_test_dir, header = FALSE) %>%
+#       sapply(as.numeric)
 # 
 # 
 # ###Training Data
 # X_train_dir <- "./data/smartphone_data_set/train/X_train.txt"
-# X_train <- read.table(X_train_dir, header = FALSE)
-# 
-# 
+# X_train <- read.table(X_train_dir, header = FALSE) %>%
+#       sapply(as.numeric)
 # 
 # 
 # #Features/ Variables
@@ -83,11 +84,27 @@
 # 
 # 
 # 
-# # #Merging Dataset
+# #Merging Dataset
 # testtrain_df <- merge(testset_df, trainset_df, by = "activity")
+# 
 
 
-#Summary
-testtrain_df <- group_by(testtrain_df, activity)
-tidyset_tbl <- summarize(testtrain_df, mean("fBodyGyromean()X"))
 
+
+#CREATING THE TIDYSET AND SUMMARIZING
+
+#Summarizing Data
+activity_levels <- c(1:6)
+##test set
+sum_test_data <- rowsum(testset_df, group = y_test) %>%
+      select(-activity) %>% mutate( activity = activity_levels)
+      
+
+##train set
+sum_train_data <- rowsum(trainset_df, group = y_train) %>%
+      select(-activity) %>% mutate( activity = activity_levels)
+
+##Merging
+tidyset_df <- merge(sum_test_data, sum_train_data, by = "activity")
+
+write.table(tidyset_df, file = "./data/tidyset.txt", row.names = FALSE)
